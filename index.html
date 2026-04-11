@@ -35,7 +35,6 @@
     flex-direction: column;
   }
 
-  /* ── Header ── */
   header {
     padding: 2rem 2.5rem 1.5rem;
     border-bottom: 1px solid var(--border);
@@ -82,7 +81,6 @@
     border-radius: 100px;
   }
 
-  /* ── Main layout ── */
   main {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -92,7 +90,6 @@
     min-height: 0;
   }
 
-  /* ── Panel base ── */
   .panel {
     border-right: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
@@ -137,7 +134,6 @@
     gap: 0.75rem;
   }
 
-  /* ── Textarea / code ── */
   textarea, .code-out {
     flex: 1;
     width: 100%;
@@ -168,7 +164,6 @@
   }
   .code-out.has-content { color: var(--text); }
 
-  /* ── Mappings table ── */
   .mappings-wrap {
     flex: 1;
     display: flex;
@@ -225,7 +220,6 @@
   }
   .btn-del:hover { border-color: var(--danger); color: var(--danger); }
 
-  /* ── Buttons ── */
   .btn-row {
     display: flex;
     gap: 0.5rem;
@@ -255,7 +249,6 @@
   .btn-primary:hover { background: #d6f47a; border-color: #d6f47a; color: #0f0f0f; }
   .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
-  /* ── Upload drop zone ── */
   .drop-zone {
     border: 1.5px dashed var(--border);
     border-radius: 8px;
@@ -274,7 +267,6 @@
   }
   .drop-zone input { display: none; }
 
-  /* ── Stats bar ── */
   .stats-bar {
     display: flex;
     gap: 1rem;
@@ -288,7 +280,6 @@
   .stat-val { color: var(--accent); font-weight: 500; }
   .stat-val.zero { color: var(--text-dim); }
 
-  /* ── Action area (spans full width) ── */
   .action-panel {
     grid-column: 1 / -1;
     border-bottom: 1px solid var(--border);
@@ -311,7 +302,6 @@
   .status-msg.ok  { color: var(--success); background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.2); }
   .status-msg.err { color: var(--danger);  background: rgba(255,94,94,0.08);  border: 1px solid rgba(255,94,94,0.2); }
 
-  /* ── Footer ── */
   footer {
     padding: 0.75rem 2.5rem;
     border-top: 1px solid var(--border);
@@ -324,7 +314,6 @@
   footer span { display: flex; gap: 5px; align-items: center; }
   footer .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text-dim); }
 
-  /* ── Responsive ── */
   @media (max-width: 700px) {
     header { padding: 1.25rem 1rem 1rem; }
     main { grid-template-columns: 1fr; }
@@ -388,6 +377,7 @@
         <button id="btn-add">+ Add row</button>
         <button id="btn-clear-map">Clear all</button>
         <button id="btn-import-map" title="Import a .ini or .txt mappings file">Import file</button>
+        <button id="btn-export-map" title="Export current mappings as .ini file">Export file</button>
         <input type="file" id="map-file-input" accept=".ini,.txt,.csv" style="display:none">
       </div>
       <div class="stats-bar">
@@ -559,6 +549,27 @@
     });
     showStatus(added ? `Imported ${added} mapping${added > 1 ? 's' : ''}` : 'No valid mappings found', added ? 'ok' : 'err');
   }
+
+  /* ── Export mappings ── */
+  document.getElementById('btn-export-map').addEventListener('click', () => {
+    const mappings = getMappings();
+    if (!mappings.length) { showStatus('No mappings to export', 'err'); return; }
+    const lines = [
+      '# Class Updater — mappings file',
+      '# Format: old_class = new_class',
+      '# Import this file using the "Import file" button.',
+      '',
+      '[mappings]',
+      ...mappings.map(([old, nw]) => `${old} = ${nw}`)
+    ];
+    const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'mappings.ini';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showStatus(`Exported ${mappings.length} mapping${mappings.length > 1 ? 's' : ''} as mappings.ini`, 'ok');
+  });
 
   /* ── Core replacement engine ── */
   function buildReplacer(mappings) {
