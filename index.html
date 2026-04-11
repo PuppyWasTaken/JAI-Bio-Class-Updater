@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Class Updater</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --surface2: #222222;
+    --border: #2e2e2e;
+    --border-hover: #444;
+    --text: #e8e8e8;
+    --text-muted: #777;
+    --text-dim: #444;
+    --accent: #c8f060;
+    --accent-dark: #9bbf3a;
+    --accent-glow: rgba(200, 240, 96, 0.12);
+    --danger: #ff5e5e;
+    --success: #4ade80;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Header ── */
+  header {
+    padding: 2rem 2.5rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-end;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--accent);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .logo-icon svg { width: 18px; height: 18px; }
+  h1 {
+    font-size: 1.15rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+  .tagline {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 300;
+  }
+  .badge {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    background: var(--accent-glow);
+    border: 1px solid rgba(200,240,96,0.25);
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+
+  /* ── Main layout ── */
+  main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto 1fr;
+    gap: 0;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* ── Panel base ── */
+  .panel {
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+  }
+  .panel:nth-child(even) { border-right: none; }
+
+  .panel-header {
+    padding: 1rem 1.25rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .panel-num {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--accent);
+    background: var(--accent-glow);
+    border: 1px solid rgba(200,240,96,0.2);
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .panel-title {
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .panel-body {
+    padding: 1rem 1.25rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  /* ── Textarea / code ── */
+  textarea, .code-out {
+    flex: 1;
+    width: 100%;
+    min-height: 200px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.7;
+    color: var(--text);
+    resize: vertical;
+    transition: border-color 0.15s;
+    outline: none;
+  }
+  textarea:focus { border-color: var(--accent-dark); }
+  textarea::placeholder { color: var(--text-dim); }
+
+  .code-out {
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+    color: var(--text-muted);
+    user-select: all;
+    cursor: text;
+    resize: none;
+  }
+  .code-out.has-content { color: var(--text); }
+
+  /* ── Mappings table ── */
+  .mappings-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow-y: auto;
+    max-height: 280px;
+  }
+  .mapping-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto;
+    align-items: center;
+    gap: 6px;
+    animation: rowIn 0.15s ease;
+  }
+  @keyframes rowIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+  .mapping-row input {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+  .mapping-row input:focus { border-color: var(--accent-dark); }
+  .mapping-row input::placeholder { color: var(--text-dim); }
+
+  .arrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    user-select: none;
+  }
+
+  .btn-del {
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    color: var(--text-dim);
+    cursor: pointer;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: all 0.12s;
+    flex-shrink: 0;
+  }
+  .btn-del:hover { border-color: var(--danger); color: var(--danger); }
+
+  /* ── Buttons ── */
+  .btn-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  button {
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 7px;
+    padding: 7px 14px;
+    transition: all 0.12s;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text-muted);
+  }
+  button:hover { background: var(--surface); color: var(--text); border-color: var(--border-hover); }
+  button:active { transform: scale(0.97); }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #0f0f0f;
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+  .btn-primary:hover { background: #d6f47a; border-color: #d6f47a; color: #0f0f0f; }
+  .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+  /* ── Upload drop zone ── */
+  .drop-zone {
+    border: 1.5px dashed var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: var(--accent-dark);
+    background: var(--accent-glow);
+    color: var(--accent);
+  }
+  .drop-zone input { display: none; }
+
+  /* ── Stats bar ── */
+  .stats-bar {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    flex-shrink: 0;
+  }
+  .stat { display: flex; align-items: center; gap: 5px; }
+  .stat-val { color: var(--accent); font-weight: 500; }
+  .stat-val.zero { color: var(--text-dim); }
+
+  /* ── Action area (spans full width) ── */
+  .action-panel {
+    grid-column: 1 / -1;
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .action-panel .status-msg {
+    font-family: var(--mono);
+    font-size: 0.73rem;
+    margin-left: auto;
+    padding: 5px 12px;
+    border-radius: 100px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .action-panel .status-msg.show { opacity: 1; }
+  .status-msg.ok  { color: var(--success); background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.2); }
+  .status-msg.err { color: var(--danger);  background: rgba(255,94,94,0.08);  border: 1px solid rgba(255,94,94,0.2); }
+
+  /* ── Footer ── */
+  footer {
+    padding: 0.75rem 2.5rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  footer span { display: flex; gap: 5px; align-items: center; }
+  footer .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text-dim); }
+
+  /* ── Responsive ── */
+  @media (max-width: 700px) {
+    header { padding: 1.25rem 1rem 1rem; }
+    main { grid-template-columns: 1fr; }
+    .panel { border-right: none; }
+    .panel:nth-child(even) { border-right: none; }
+    footer { padding: 0.75rem 1rem; }
+    .action-panel { padding: 0.75rem 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="1" y="4" width="7" height="2" rx="1" fill="#0f0f0f"/>
+        <rect x="1" y="8" width="5" height="2" rx="1" fill="#0f0f0f"/>
+        <rect x="1" y="12" width="6" height="2" rx="1" fill="#0f0f0f"/>
+        <path d="M11 9l3-3 3 3M14 6v6" stroke="#0f0f0f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div>
+      <h1>Class Updater</h1>
+      <p class="tagline">Bulk rename CSS &amp; HTML class names in your browser</p>
+    </div>
+  </div>
+  <div class="badge">no upload · runs locally</div>
+</header>
+
+<main>
+
+  <!-- ── Panel 1: Input file ── -->
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-num">1</div>
+      <span class="panel-title">Your CSS / HTML</span>
+    </div>
+    <div class="panel-body">
+      <label class="drop-zone" id="drop-zone">
+        <input type="file" id="file-input" accept=".css,.html,.htm,.scss,.jsx,.tsx,.js,.ts">
+        Drop a file here, or click to upload
+      </label>
+      <textarea id="input-code" placeholder=".one { color: black; }&#10;.btn-primary { background: blue; }&#10;&#10;<div class=&quot;one active&quot;>Hello</div>&#10;<button class=&quot;btn-primary&quot;>Click</button>" spellcheck="false"></textarea>
+      <div class="stats-bar">
+        <div class="stat">Lines: <span class="stat-val" id="stat-lines">0</span></div>
+        <div class="stat">Chars: <span class="stat-val" id="stat-chars">0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Panel 2: Mappings ── -->
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-num">2</div>
+      <span class="panel-title">Class mappings</span>
+    </div>
+    <div class="panel-body">
+      <div class="mappings-wrap" id="mappings-list"></div>
+      <div class="btn-row">
+        <button id="btn-add">+ Add row</button>
+        <button id="btn-clear-map">Clear all</button>
+        <button id="btn-import-map" title="Import a .ini or .txt mappings file">Import file</button>
+        <input type="file" id="map-file-input" accept=".ini,.txt,.csv" style="display:none">
+      </div>
+      <div class="stats-bar">
+        <div class="stat">Rules: <span class="stat-val" id="stat-rules">0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Action bar ── -->
+  <div class="action-panel">
+    <button class="btn-primary" id="btn-run">Run replacements</button>
+    <button id="btn-dry">Dry run (count only)</button>
+    <div class="status-msg" id="status-msg"></div>
+  </div>
+
+  <!-- ── Panel 3: Output ── -->
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-num">3</div>
+      <span class="panel-title">Output</span>
+    </div>
+    <div class="panel-body">
+      <div class="code-out" id="output-code" aria-label="Updated code output">Waiting for input…</div>
+      <div class="btn-row">
+        <button id="btn-copy">Copy to clipboard</button>
+        <button id="btn-download">Download file</button>
+      </div>
+      <div class="stats-bar">
+        <div class="stat">Replacements: <span class="stat-val zero" id="stat-replacements">0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Panel 4: Diff preview ── -->
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-num">4</div>
+      <span class="panel-title">Change log</span>
+    </div>
+    <div class="panel-body">
+      <div class="code-out" id="diff-out" style="font-size:0.72rem; line-height:1.8;" aria-label="Change log">Run replacements to see what changed.</div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <span>Works entirely in your browser</span>
+  <span class="dot"></span>
+  <span>No data is sent anywhere</span>
+  <span class="dot"></span>
+  <span>Handles CSS, HTML, JSX, SCSS</span>
+</footer>
+
+<script>
+  /* ── State ── */
+  let lastFilename = 'updated.css';
+
+  /* ── Mapping rows ── */
+  const list = document.getElementById('mappings-list');
+
+  function addRow(old = '', nw = '') {
+    const row = document.createElement('div');
+    row.className = 'mapping-row';
+    row.innerHTML = `
+      <input type="text" placeholder="old-class" value="${esc(old)}">
+      <span class="arrow">→</span>
+      <input type="text" placeholder="new-class" value="${esc(nw)}">
+      <button class="btn-del" title="Remove row">×</button>
+    `;
+    row.querySelector('.btn-del').addEventListener('click', () => {
+      row.remove();
+      updateRuleCount();
+    });
+    row.querySelectorAll('input').forEach(i => i.addEventListener('input', updateRuleCount));
+    list.appendChild(row);
+    updateRuleCount();
+    return row;
+  }
+
+  function esc(s) { return s.replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+  function getMappings() {
+    const rows = list.querySelectorAll('.mapping-row');
+    const m = [];
+    rows.forEach(r => {
+      const [a, b] = r.querySelectorAll('input');
+      const old = a.value.trim().replace(/^\./, '');
+      const nw  = b.value.trim().replace(/^\./, '');
+      if (old && nw && old !== nw) m.push([old, nw]);
+    });
+    return m;
+  }
+
+  function updateRuleCount() {
+    document.getElementById('stat-rules').textContent = getMappings().length;
+  }
+
+  document.getElementById('btn-add').addEventListener('click', () => {
+    const row = addRow();
+    row.querySelector('input').focus();
+  });
+
+  document.getElementById('btn-clear-map').addEventListener('click', () => {
+    list.innerHTML = '';
+    updateRuleCount();
+  });
+
+  /* Default rows to demonstrate */
+  addRow('one', 'two');
+  addRow('btn-primary', 'button-main');
+
+  /* ── Input stats ── */
+  const inputCode = document.getElementById('input-code');
+  inputCode.addEventListener('input', () => {
+    const v = inputCode.value;
+    document.getElementById('stat-lines').textContent = v ? v.split('\n').length : 0;
+    document.getElementById('stat-chars').textContent = v.length;
+  });
+
+  /* ── File upload (input code) ── */
+  const dropZone = document.getElementById('drop-zone');
+  const fileInput = document.getElementById('file-input');
+
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const f = e.dataTransfer.files[0];
+    if (f) readInputFile(f);
+  });
+  fileInput.addEventListener('change', () => { if (fileInput.files[0]) readInputFile(fileInput.files[0]); });
+
+  function readInputFile(file) {
+    lastFilename = 'updated-' + file.name;
+    const r = new FileReader();
+    r.onload = e => {
+      inputCode.value = e.target.result;
+      inputCode.dispatchEvent(new Event('input'));
+      dropZone.textContent = '📄 ' + file.name;
+    };
+    r.readAsText(file);
+  }
+
+  /* ── Import mappings file (.ini / .txt) ── */
+  document.getElementById('btn-import-map').addEventListener('click', () =>
+    document.getElementById('map-file-input').click());
+
+  document.getElementById('map-file-input').addEventListener('change', function() {
+    const f = this.files[0];
+    if (!f) return;
+    const r = new FileReader();
+    r.onload = e => parseMappingsFile(e.target.result);
+    r.readAsText(f);
+  });
+
+  function parseMappingsFile(text) {
+    const lines = text.split('\n');
+    let added = 0;
+    lines.forEach(raw => {
+      const line = raw.trim();
+      if (!line || line.startsWith('#') || line.startsWith(';') || line.startsWith('[')) return;
+      const eq = line.indexOf('=');
+      if (eq === -1) return;
+      const old = line.slice(0, eq).trim().replace(/^\./, '');
+      const nw  = line.slice(eq + 1).trim().replace(/^\./, '');
+      if (old && nw) { addRow(old, nw); added++; }
+    });
+    showStatus(added ? `Imported ${added} mapping${added > 1 ? 's' : ''}` : 'No valid mappings found', added ? 'ok' : 'err');
+  }
+
+  /* ── Core replacement engine ── */
+  function buildReplacer(mappings) {
+    /* Sort longest first to avoid partial matches */
+    const sorted = [...mappings].sort((a, b) => b[0].length - a[0].length);
+
+    /* Regex: class="..." or className="..." */
+    const attrRe = /(class(?:Name)?\s*=\s*["'])([^"']*?)(["'])/gi;
+
+    function replaceInAttrValue(classes) {
+      return classes.split(/(\s+)/).map(token => {
+        if (/^\s+$/.test(token)) return token;
+        for (const [old, nw] of sorted) {
+          if (token === old) return nw;
+        }
+        return token;
+      }).join('');
+    }
+
+    return function(text) {
+      let count = 0;
+      const log = [];
+
+      /* Pass 1: HTML/JSX attributes */
+      text = text.replace(attrRe, (match, pre, classes, suf) => {
+        const replaced = replaceInAttrValue(classes);
+        if (replaced !== classes) {
+          const before = classes.trim().split(/\s+/);
+          const after  = replaced.trim().split(/\s+/);
+          before.forEach((b, i) => {
+            if (b !== after[i]) {
+              count++;
+              log.push({ context: 'HTML attr', from: b, to: after[i] });
+            }
+          });
+        }
+        return pre + replaced + suf;
+      });
+
+      /* Pass 2: CSS selectors */
+      for (const [old, nw] of sorted) {
+        const re = new RegExp('(?<![\\w-])\\.' + escapeRegex(old) + '(?![\\w-])', 'g');
+        text = text.replace(re, m => {
+          count++;
+          log.push({ context: 'CSS selector', from: '.' + old, to: '.' + nw });
+          return '.' + nw;
+        });
+      }
+
+      return { text, count, log };
+    };
+  }
+
+  function escapeRegex(s) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  /* ── Run ── */
+  document.getElementById('btn-run').addEventListener('click', () => run(false));
+  document.getElementById('btn-dry').addEventListener('click', () => run(true));
+
+  function run(dryRun) {
+    const input = inputCode.value;
+    if (!input.trim()) { showStatus('Paste or upload your CSS/HTML first', 'err'); return; }
+    const mappings = getMappings();
+    if (!mappings.length) { showStatus('Add at least one mapping', 'err'); return; }
+
+    const replacer = buildReplacer(mappings);
+    const { text, count, log } = replacer(input);
+
+    const outEl = document.getElementById('output-code');
+    const diffEl = document.getElementById('diff-out');
+    const statEl = document.getElementById('stat-replacements');
+
+    statEl.textContent = count;
+    statEl.className = 'stat-val' + (count > 0 ? '' : ' zero');
+
+    if (dryRun) {
+      showStatus(count ? `Dry run: ${count} replacement${count > 1 ? 's' : ''} would be made` : 'Dry run: nothing to replace', count ? 'ok' : 'err');
+      outEl.textContent = input;
+      outEl.classList.remove('has-content');
+    } else {
+      outEl.textContent = text;
+      outEl.classList.toggle('has-content', !!text.trim());
+      showStatus(count ? `Done — ${count} replacement${count > 1 ? 's' : ''} made` : 'No replacements matched', count ? 'ok' : 'err');
+    }
+
+    /* Build change log */
+    if (log.length) {
+      /* Group by from→to */
+      const grouped = {};
+      log.forEach(({ context, from, to }) => {
+        const key = from + ' → ' + to;
+        if (!grouped[key]) grouped[key] = { from, to, css: 0, html: 0 };
+        if (context === 'CSS selector') grouped[key].css++;
+        else grouped[key].html++;
+      });
+      let lines = [];
+      Object.entries(grouped).forEach(([key, g]) => {
+        const parts = [];
+        if (g.css)  parts.push(`${g.css}× CSS`);
+        if (g.html) parts.push(`${g.html}× HTML`);
+        lines.push(`${g.from}  →  ${g.to}    (${parts.join(', ')})`);
+      });
+      diffEl.textContent = lines.join('\n');
+      diffEl.classList.add('has-content');
+    } else {
+      diffEl.textContent = dryRun ? 'Nothing would change.' : 'No changes were made.';
+      diffEl.classList.remove('has-content');
+    }
+  }
+
+  /* ── Copy / Download ── */
+  document.getElementById('btn-copy').addEventListener('click', () => {
+    const text = document.getElementById('output-code').textContent;
+    if (!text || text === 'Waiting for input…') { showStatus('Nothing to copy yet', 'err'); return; }
+    navigator.clipboard.writeText(text).then(() => showStatus('Copied!', 'ok'));
+  });
+
+  document.getElementById('btn-download').addEventListener('click', () => {
+    const text = document.getElementById('output-code').textContent;
+    if (!text || text === 'Waiting for input…') { showStatus('Nothing to download yet', 'err'); return; }
+    const blob = new Blob([text], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = lastFilename;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showStatus('Downloaded ' + lastFilename, 'ok');
+  });
+
+  /* ── Status helper ── */
+  let statusTimer;
+  function showStatus(msg, type) {
+    const el = document.getElementById('status-msg');
+    el.textContent = msg;
+    el.className = 'status-msg show ' + type;
+    clearTimeout(statusTimer);
+    statusTimer = setTimeout(() => el.classList.remove('show'), 4000);
+  }
+</script>
+</body>
+</html>
