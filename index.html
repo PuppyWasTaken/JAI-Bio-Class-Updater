@@ -35,7 +35,6 @@
     flex-direction: column;
   }
 
-  /* ── Header ── */
   header {
     padding: 2rem 2.5rem 1.5rem;
     border-bottom: 1px solid var(--border);
@@ -82,7 +81,7 @@
     border-radius: 100px;
   }
 
-  /* ── Main layout ── */
+
   main {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -92,7 +91,7 @@
     min-height: 0;
   }
 
-  /* ── Panel base ── */
+
   .panel {
     border-right: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
@@ -137,7 +136,7 @@
     gap: 0.75rem;
   }
 
-  /* ── Textarea / code ── */
+
   textarea, .code-out {
     flex: 1;
     width: 100%;
@@ -168,7 +167,7 @@
   }
   .code-out.has-content { color: var(--text); }
 
-  /* ── Mappings table ── */
+
   .mappings-wrap {
     flex: 1;
     display: flex;
@@ -225,7 +224,7 @@
   }
   .btn-del:hover { border-color: var(--danger); color: var(--danger); }
 
-  /* ── Buttons ── */
+
   .btn-row {
     display: flex;
     gap: 0.5rem;
@@ -255,7 +254,7 @@
   .btn-primary:hover { background: #d6f47a; border-color: #d6f47a; color: #0f0f0f; }
   .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
-  /* ── Upload drop zone ── */
+
   .drop-zone {
     border: 1.5px dashed var(--border);
     border-radius: 8px;
@@ -274,7 +273,7 @@
   }
   .drop-zone input { display: none; }
 
-  /* ── Stats bar ── */
+
   .stats-bar {
     display: flex;
     gap: 1rem;
@@ -288,7 +287,7 @@
   .stat-val { color: var(--accent); font-weight: 500; }
   .stat-val.zero { color: var(--text-dim); }
 
-  /* ── Action area (spans full width) ── */
+
   .action-panel {
     grid-column: 1 / -1;
     border-bottom: 1px solid var(--border);
@@ -311,7 +310,7 @@
   .status-msg.ok  { color: var(--success); background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.2); }
   .status-msg.err { color: var(--danger);  background: rgba(255,94,94,0.08);  border: 1px solid rgba(255,94,94,0.2); }
 
-  /* ── Footer ── */
+
   footer {
     padding: 0.75rem 2.5rem;
     border-top: 1px solid var(--border);
@@ -324,7 +323,7 @@
   footer span { display: flex; gap: 5px; align-items: center; }
   footer .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text-dim); }
 
-  /* ── Responsive ── */
+
   @media (max-width: 700px) {
     header { padding: 1.25rem 1rem 1rem; }
     main { grid-template-columns: 1fr; }
@@ -349,15 +348,15 @@
     </div>
     <div>
       <h1>Class Updater</h1>
-      <p class="tagline">Bulk rename CSS &amp; HTML class names in your browser</p>
+      <p class="tagline">Bulk rename CSS &amp; HTML class names locally</p>
     </div>
   </div>
-  <div class="badge">no upload · runs locally</div>
+  <div class="badge">Like this tool? Consider tipping me on <a href="https://ko-fi.com/permanent">Ko-Fi</a></div>
 </header>
 
 <main>
 
-  <!-- ── Panel 1: Input file ── -->
+
   <div class="panel">
     <div class="panel-header">
       <div class="panel-num">1</div>
@@ -376,11 +375,11 @@
     </div>
   </div>
 
-  <!-- ── Panel 2: Mappings ── -->
+
   <div class="panel">
     <div class="panel-header">
       <div class="panel-num">2</div>
-      <span class="panel-title">Class mappings</span>
+      <span class="panel-title">Class Changes</span>
     </div>
     <div class="panel-body">
       <div class="mappings-wrap" id="mappings-list"></div>
@@ -397,14 +396,12 @@
     </div>
   </div>
 
-  <!-- ── Action bar ── -->
   <div class="action-panel">
     <button class="btn-primary" id="btn-run">Run replacements</button>
-    <button id="btn-dry">Dry run (count only)</button>
+    <button id="btn-dry">Count Replacements</button>
     <div class="status-msg" id="status-msg"></div>
   </div>
 
-  <!-- ── Panel 3: Output ── -->
   <div class="panel">
     <div class="panel-header">
       <div class="panel-num">3</div>
@@ -422,7 +419,6 @@
     </div>
   </div>
 
-  <!-- ── Panel 4: Diff preview ── -->
   <div class="panel">
     <div class="panel-header">
       <div class="panel-num">4</div>
@@ -441,13 +437,13 @@
   <span>No data is sent anywhere</span>
   <span class="dot"></span>
   <span>Handles CSS, HTML, JSX, SCSS</span>
+  <span class="dot"></span>
+  <span>Made and Maintained by <a href="https://puppy.uwu.ai/">Permanent</a></span>
 </footer>
 
 <script>
-  /* ── State ── */
   let lastFilename = 'updated.css';
 
-  /* ── Mapping rows ── */
   const list = document.getElementById('mappings-list');
 
   function addRow(old = '', nw = '') {
@@ -497,7 +493,6 @@
     updateRuleCount();
   });
 
-  /* ── Preload mappings from remote file ── */
   const MAPPINGS_URL = 'https://raw.githubusercontent.com/PuppyWasTaken/JAI-Bio-Class-Updater/main/mappings.ini';
 
   async function fetchDefaultMappings() {
@@ -515,7 +510,6 @@
 
   fetchDefaultMappings();
 
-  /* ── Input stats ── */
   const inputCode = document.getElementById('input-code');
   inputCode.addEventListener('input', () => {
     const v = inputCode.value;
@@ -523,7 +517,6 @@
     document.getElementById('stat-chars').textContent = v.length;
   });
 
-  /* ── File upload (input code) ── */
   const dropZone = document.getElementById('drop-zone');
   const fileInput = document.getElementById('file-input');
 
@@ -548,7 +541,6 @@
     r.readAsText(file);
   }
 
-  /* ── Import mappings file (.ini / .txt) ── */
   document.getElementById('btn-import-map').addEventListener('click', () =>
     document.getElementById('map-file-input').click());
 
@@ -575,7 +567,6 @@
     showStatus(added ? `Imported ${added} mapping${added > 1 ? 's' : ''}` : 'No valid mappings found', added ? 'ok' : 'err');
   }
 
-  /* ── Export mappings ── */
   document.getElementById('btn-export-map').addEventListener('click', () => {
     const mappings = getMappings();
     if (!mappings.length) { showStatus('No mappings to export', 'err'); return; }
@@ -596,12 +587,11 @@
     showStatus(`Exported ${mappings.length} mapping${mappings.length > 1 ? 's' : ''} as mappings.ini`, 'ok');
   });
 
-  /* ── Core replacement engine ── */
   function buildReplacer(mappings) {
-    /* Sort longest first to avoid partial matches */
+
     const sorted = [...mappings].sort((a, b) => b[0].length - a[0].length);
 
-    /* Regex: class="..." or className="..." */
+
     const attrRe = /(class(?:Name)?\s*=\s*["'])([^"']*?)(["'])/gi;
 
     function replaceInAttrValue(classes) {
@@ -618,7 +608,7 @@
       let count = 0;
       const log = [];
 
-      /* Pass 1: HTML/JSX attributes */
+
       text = text.replace(attrRe, (match, pre, classes, suf) => {
         const replaced = replaceInAttrValue(classes);
         if (replaced !== classes) {
@@ -634,7 +624,7 @@
         return pre + replaced + suf;
       });
 
-      /* Pass 2: CSS selectors */
+
       for (const [old, nw] of sorted) {
         const re = new RegExp('(?<![\\w-])\\.' + escapeRegex(old) + '(?![\\w-])', 'g');
         text = text.replace(re, m => {
@@ -652,7 +642,7 @@
     return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
-  /* ── Run ── */
+
   document.getElementById('btn-run').addEventListener('click', () => run(false));
   document.getElementById('btn-dry').addEventListener('click', () => run(true));
 
@@ -682,9 +672,9 @@
       showStatus(count ? `Done — ${count} replacement${count > 1 ? 's' : ''} made` : 'No replacements matched', count ? 'ok' : 'err');
     }
 
-    /* Build change log */
+
     if (log.length) {
-      /* Group by from→to */
+
       const grouped = {};
       log.forEach(({ context, from, to }) => {
         const key = from + ' → ' + to;
@@ -707,7 +697,7 @@
     }
   }
 
-  /* ── Copy / Download ── */
+
   document.getElementById('btn-copy').addEventListener('click', () => {
     const text = document.getElementById('output-code').textContent;
     if (!text || text === 'Waiting for input…') { showStatus('Nothing to copy yet', 'err'); return; }
@@ -726,7 +716,7 @@
     showStatus('Downloaded ' + lastFilename, 'ok');
   });
 
-  /* ── Status helper ── */
+
   let statusTimer;
   function showStatus(msg, type) {
     const el = document.getElementById('status-msg');
