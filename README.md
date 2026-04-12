@@ -9,11 +9,13 @@ I simply needed a tool that replaced one class ID with another. The site is cons
 ## How it works ## 
 1. YOUR CSS/HTML 
 > Drag & Drop your css file or manually enter it into the box. 
+
 > This is the file you want to change the classes of. For example, your bot bio description source code. You can copy and paste that whole thing in there. 
 
 2. CLASS MAPPING 
+#### **I HAVE THIS PRE-LOADED WITH THE CURRENT CLASS EQUIVALENTS. IF YOU JUST WANT TO PLUG-AND-PLAY, DO NOT CHANGE ANYTHING IN THIS SECTION!** ####
 > This is where you need to set the class equivalents. The input on the left will be replaced with the input on the right. 
-> **I HAVE THIS PRE-LOADED WITH THE CURRENT CLASS EQUIVALENTS SO IF YOU JUST WANT TO PLUG-AND-PLAY, DO NOT CHANGE ANYTHING IN THIS SECTION!**
-E.g. You have a class named "btn-primary" and now you need to update all instances to a class named "button-main". You put `btn-primary` --> `button-main` 
+
+> E.g. You have a class named "btn-primary" and now you need to update all instances to a class named "button-main". You put `btn-primary` --> `button-main` 
 > To add more entries, press *+ Add row*  
 
