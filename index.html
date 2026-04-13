@@ -35,7 +35,8 @@
 	--box-shadow-inset: inset 0 22px 56px -36px rgba(255, 255, 255, .5), inset 0 4px 5px -4px rgba(255, 255, 255, 1), inset 0 -31px 34px -32px rgba(96, 68, 144, .3), inset 0 39px 50px -34px rgba(202, 172, 255, .3), inset 0 2px 9px rgba(154, 146, 210, .3), inset 0 1px 10px rgba(227, 222, 255, .2);
 	--box-shadow-inset-button: inset 0 2px 7px -9px rgba(255, 255, 255, .5), inset 0 1px 2px -1px rgba(255, 255, 255, 1), inset 0 -20px 16px -32px rgba(96, 68, 144, .3), inset 0 28px 25px -24px rgba(202, 172, 255, .3), inset 0 1px 4px rgba(154, 146, 210, .3), inset 0 1px 10px rgba(227, 222, 255, .2);
 	--box-shadow-inset-button-hover: inset 0 4px 7px -4px rgba(255, 255, 255, .5), inset 0 1px 2px -1px rgba(255, 255, 255, 1), inset 0 -20px 16px -32px rgba(96, 68, 144, .3), inset 0 28px 25px -20px rgba(202, 172, 255, .3), inset 0 1px 4px rgba(154, 146, 210, .3), inset 0 1px 16px rgba(227, 222, 255, .2);
-	    --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+	--shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+	--reflection-top: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 50%);
   }
 
   body {
@@ -47,6 +48,7 @@
     flex-direction: column;
     padding: 1rem;
     padding-top: 0;
+	background-image: radial-gradient(at 100% 67%, hsla(157, 43%, 78%, 0.5) 0px, transparent 12%), radial-gradient(at 86% 92%, hsla(290, 55%, 56%, 0.5) 0px, transparent 24%), radial-gradient(at -5% 5%, hsl(349.31deg 79.53% 75.1% / 40%) 0px, transparent 28%);
   }
 
  a{
@@ -69,7 +71,8 @@
   .logo-icon {
     width: 32px;
     height: 32px;
-    background: var(--accent);
+    background: var(--accent-bg-color);
+	background-image: var(--accent-bg-img);
     border-radius: 6px;
     display: flex;
     align-items: center;
@@ -88,16 +91,17 @@
     color: var(--text-muted);
     font-weight: 300;
   }
-  .badge {
+.badge {
     margin-left: auto;
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    color: var(--accent);
-    background: var(--accent-glow);
-    border: 1px solid rgba(200,240,96,0.25);
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    color: #ffffff;
     padding: 3px 10px;
     border-radius: 100px;
-  }
+    background: linear-gradient(135deg, rgb(242, 141, 159, 0.5) 0%, rgb(176 224 208 / 50%) 100%);
+    border: 1px solid rgba(94, 231, 223, 0.45);
+    box-shadow: 0 4px 24px rgb(233 250 204 / 35%), var(--reflection-inner);
+}
 
 
 main {
@@ -114,7 +118,16 @@ main {
     border-radius: 1.5rem;
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.18), 20px 20px 20px rgba(0, 0, 0, 0.5);
 }
-
+main::before {
+    position: absolute;
+    content: '';
+    inset: 0;
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 50%);
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 1;
+    opacity: 0.45;
+}
 
   .panel {
     border-right: 1px solid var(--border);
@@ -136,13 +149,11 @@ main {
     position: relative;
     overflow: hidden;
 }
-  }
   .panel-num {
     font-family: var(--mono);
     font-size: 0.65rem;
     color: var(--accent);
-    background: var(--accent-glow);
-    border: 1px solid rgba(200,240,96,0.2);
+    background: transparent;
     width: 20px;
     height: 20px;
     border-radius: 4px;
@@ -167,12 +178,10 @@ main {
   }
 
 
-  textarea, .code-out {
+textarea, .code-out {
     flex: 1;
     width: 100%;
     min-height: 200px;
-    background: transparent;
-    border: 1px solid var(--border);
     border-radius: 8px;
     padding: 0.85rem 1rem;
     font-family: var(--mono);
@@ -182,9 +191,11 @@ main {
     resize: vertical;
     transition: border-color 0.15s;
     outline: none;
-  }
+    background: var(--surface2);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
   textarea:focus { border-color: var(--accent-dark); }
-  textarea::placeholder { color: var(--text-dim); }
+  textarea::placeholder { color: var(--text); }
 
   .code-out {
     overflow-y: auto;
@@ -285,8 +296,8 @@ main {
   .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
 
-  .drop-zone {
-    border: 1.5px dashed var(--border);
+.drop-zone {
+    border: 1.5px dashed rgba(255, 255, 255, 0.12);
     border-radius: 8px;
     padding: 0.75rem 1rem;
     text-align: center;
@@ -295,10 +306,10 @@ main {
     cursor: pointer;
     transition: all 0.15s;
     flex-shrink: 0;
-  }
+}
   .drop-zone:hover, .drop-zone.drag-over {
     border-color: var(--accent-dark);
-    background: var(--accent-glow);
+    background: var(--surface2);
     color: var(--accent);
   }
   .drop-zone input { display: none; }
