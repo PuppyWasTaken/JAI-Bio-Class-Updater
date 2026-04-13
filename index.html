@@ -13,8 +13,9 @@
   :root {
     --bg: #0f0f0f;
     --surface: #1a1a1a;
-    --surface2: #222222;
+    --surface2: rgba(255, 255, 255, 0.12);
     --border: #2e2e2e;
+	--glass-border: rgba(255, 255, 255, 0.12);
     --border-hover: #444;
     --text: #b1b1b1;
     --text-muted: #b0b0b0;
@@ -30,7 +31,11 @@
     --sans: "Arimo", sans-serif;
     --accent-bg-color: hsla(35, 64%, 90%, 1);
     --accent-bg-img: radial-gradient(at 9% 68%, hsla(349, 76%, 74%, 1) 0px, transparent 50%), radial-gradient(at 84% 0%, hsla(1, 88%, 86%, 1) 0px, transparent 50%), radial-gradient(at 7% 5%, hsla(82, 85%, 89%, 1) 0px, transparent 50%), radial-gradient(at 82% 76%, hsla(157, 43%, 78%, 1) 0px, transparent 50%), radial-gradient(at 48% 0%, hsla(170, 83%, 68%, 1) 0px, transparent 50%);
-
+	--box-shadow-inset-hover: inset 0 19px 28px -18px rgba(255, 255, 255, .5), inset 0 4px 6px -3px rgba(255, 255, 255, 1), inset 0 -51px 44px -42px rgba(96, 68, 144, .3), inset 0 59px 60px -32px rgba(202, 172, 255, .3), inset 0 4px 16px rgba(154, 146, 210, .3), inset 0 2px 25px rgba(227, 222, 255, .23);
+	--box-shadow-inset: inset 0 22px 56px -36px rgba(255, 255, 255, .5), inset 0 4px 5px -4px rgba(255, 255, 255, 1), inset 0 -31px 34px -32px rgba(96, 68, 144, .3), inset 0 39px 50px -34px rgba(202, 172, 255, .3), inset 0 2px 9px rgba(154, 146, 210, .3), inset 0 1px 10px rgba(227, 222, 255, .2);
+	--box-shadow-inset-button: inset 0 2px 7px -9px rgba(255, 255, 255, .5), inset 0 1px 2px -1px rgba(255, 255, 255, 1), inset 0 -20px 16px -32px rgba(96, 68, 144, .3), inset 0 28px 25px -24px rgba(202, 172, 255, .3), inset 0 1px 4px rgba(154, 146, 210, .3), inset 0 1px 10px rgba(227, 222, 255, .2);
+	--box-shadow-inset-button-hover: inset 0 4px 7px -4px rgba(255, 255, 255, .5), inset 0 1px 2px -1px rgba(255, 255, 255, 1), inset 0 -20px 16px -32px rgba(96, 68, 144, .3), inset 0 28px 25px -20px rgba(202, 172, 255, .3), inset 0 1px 4px rgba(154, 146, 210, .3), inset 0 1px 16px rgba(227, 222, 255, .2);
+	    --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
 
   body {
@@ -107,7 +112,7 @@ main {
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 1.5rem;
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.18), 20px 20px 20px rgba(0, 0, 0, 0.5);
 }
 
 
@@ -117,7 +122,7 @@ main {
     display: flex;
     flex-direction: column;
   }
-  .panel:nth-child(even) { border-right: none; }
+  .panel:nth-child(even), .panel:last-child{ border-right: none; }
 
   .panel-header {
     padding: 1rem 1.25rem 0.75rem;
@@ -125,6 +130,12 @@ main {
     display: flex;
     align-items: center;
     gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-glass);
+    position: relative;
+    overflow: hidden;
+}
   }
   .panel-num {
     font-family: var(--mono);
@@ -206,7 +217,7 @@ main {
 
   .mapping-row input {
     background: var(--surface2);
-    border: 1px solid var(--border);
+    border: 1px solid var(--glass-border);
     border-radius: 6px;
     padding: 6px 10px;
     font-family: var(--mono);
@@ -359,6 +370,8 @@ main {
     box-shadow: 0 4px 24px rgba(239, 68, 68, 0.25), var(--reflection-inner);
 }
   @media (max-width: 700px) {
+	.header1{border-radius:1.5rem 0 0 0;}
+	.header2{border-radius:0 1.5rem 0 0;}
     header { padding: 1.25rem 1rem 1rem; }
     main { grid-template-columns: 1fr; }
     .panel { border-right: none; }
@@ -392,7 +405,7 @@ main {
 
 
   <div class="panel">
-    <div class="panel-header">
+    <div class="panel-header header1">
       <div class="panel-num">1</div>
       <span class="panel-title">Your CSS / HTML</span>
     </div>
@@ -411,7 +424,7 @@ main {
 
 
   <div class="panel">
-    <div class="panel-header">
+    <div class="panel-header header2">
       <div class="panel-num">2</div>
       <span class="panel-title">Class Changes</span>
     </div>
