@@ -19,15 +19,18 @@
     --text: #b1b1b1;
     --text-muted: #777;
     --text-dim: #444;
-    --accent: #c8f060;
-    --link: #FFB6C1;
-    --accent-dark: #9bbf3a;
+    --accent: #aee1d0;
+    --link: #6df2dd;
+    --accent-dark: #f28d9f;
     --accent-glow: rgba(200, 240, 96, 0.12);
     --danger: #ff5e5e;
     --reflection-inner: inset 0 1px 1px rgba(255, 255, 255, 0.45), inset 0 -1px 1px rgba(0, 0, 0, 0.1);
     --success: #4ade80;
     --mono: "Roboto Mono", monospace;
     --sans: "Arimo", sans-serif;
+    --accent-bg-color:background-color: hsla(35, 64%, 90%, 1);
+    --accent-bg-img: background-image: radial-gradient(at 9% 68%, hsla(349, 76%, 74%, 1) 0px, transparent 50%), radial-gradient(at 84% 0%, hsla(1, 88%, 86%, 1) 0px, transparent 50%), radial-gradient(at 7% 5%, hsla(82, 85%, 89%, 1) 0px, transparent 50%), radial-gradient(at 82% 76%, hsla(157, 43%, 78%, 1) 0px, transparent 50%), radial-gradient(at 48% 0%, hsla(170, 83%, 68%, 1) 0px, transparent 50%);
+
   }
 
   body {
@@ -260,12 +263,14 @@ main {
   button:active { transform: scale(0.97); }
 
   .btn-primary {
-    background: var(--accent);
     color: #0f0f0f;
     border-color: var(--accent);
     font-weight: 600;
+    background-color: var(--accent-bg-color);
+    background-image: var(--accent-bg-img);
+    box-shadow:none;
   }
-  .btn-primary:hover { background: #d6f47a; border-color: #d6f47a; color: #0f0f0f; }
+  .btn-primary:hover { background: var(--accent-bg-color); background-image: var(--accent-bg-img); box-shadow: 0 4px 24px rgb(255 255 255 / 25%), var(--reflection-inner);border-color: #6df2dd; color: #0f0f0f; }
   .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
 
