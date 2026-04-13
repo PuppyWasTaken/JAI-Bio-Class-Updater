@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Class Updater</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>Code Class Updater</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -18,12 +20,13 @@
     --text-muted: #777;
     --text-dim: #444;
     --accent: #c8f060;
+    --link: #FFB6C1;
     --accent-dark: #9bbf3a;
     --accent-glow: rgba(200, 240, 96, 0.12);
     --danger: #ff5e5e;
     --success: #4ade80;
-    --mono: 'DM Mono', monospace;
-    --sans: 'DM Sans', sans-serif;
+    --mono: "Roboto Mono", monospace;;
+    --sans: "Arimo", sans-serif;
   }
 
   body {
@@ -35,6 +38,11 @@
     flex-direction: column;
   }
 
+ a{
+  color: var(--link);
+  text-decoration: 1px underline;
+ }
+ 
   header {
     padding: 2rem 2.5rem 1.5rem;
     border-bottom: 1px solid var(--border);
