@@ -24,6 +24,7 @@
     --accent-dark: #9bbf3a;
     --accent-glow: rgba(200, 240, 96, 0.12);
     --danger: #ff5e5e;
+    --reflection-inner: inset 0 1px 1px rgba(255, 255, 255, 0.45), inset 0 -1px 1px rgba(0, 0, 0, 0.1);
     --success: #4ade80;
     --mono: "Roboto Mono", monospace;;
     --sans: "Arimo", sans-serif;
@@ -315,8 +316,13 @@
     transition: opacity 0.2s;
   }
   .action-panel .status-msg.show { opacity: 1; }
-  .status-msg.ok  { color: var(--success); background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.2); }
-  .status-msg.err { color: var(--danger);  background: rgba(255,94,94,0.08);  border: 1px solid rgba(255,94,94,0.2); }
+  .status-msg.ok  { color: var(--success);  background: linear-gradient(
+    135deg, rgba(144, 210, 144, 0.5) 0%, rgba(168, 240, 192, 0.5) 100%);
+  border: 1px solid rgba(144, 210, 144, 0.45);
+  box-shadow: 0 4px 24px rgba(144, 210, 144, 0.3), var(--reflection-inner);}
+  .status-msg.err { color: var(--danger);      background: linear-gradient(135deg, rgba(239, 68, 68, 0.45) 0%, rgba(220, 38, 38, 0.45) 100%);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    box-shadow: 0 4px 24px rgba(239, 68, 68, 0.25), var(--reflection-inner); }
 
 
   footer {
@@ -331,7 +337,17 @@
   footer span { display: flex; gap: 5px; align-items: center; }
   footer .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text-dim); }
 
-
+.panel:nth-child(3), .panel:nth-child(4){grid-column: -1 / 1;}
+.glass{
+  background: radial-gradient(214.46% 115.1% at 51.74% 16.04%, rgba(55, 70, 74, 0.60) 0%, rgba(116, 128, 150, 0.10) 58.65%, rgba(214, 218, 227, 0.05) 100%);
+  box-shadow: -4px -4px 24px 0 rgba(149, 159, 165, 0), 0 0.7px 0 0 rgba(255, 255, 255, 0.60) inset, 0 2px 2px 0 rgba(81, 95, 105, 0.30) inset, -1px 0 0 0 rgba(0, 0, 0, 0.45) inset, 1px 0 0 0 rgba(0, 0, 0, 0.45) inset, 0 -0.7px 0 0 rgba(255, 255, 255, 0.45) inset, 0 2px 3px 1px rgba(255, 255, 255, 0.20) inset, 0 -4px 8px 0 rgba(255, 255, 255, 0.25) inset, 0 4px 12px 0 rgba(34, 45, 52, 0.29);
+  backdrop-filter: blur(3px);
+}
+.glass-danger {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.45) 0%, rgba(220, 38, 38, 0.45) 100%);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    box-shadow: 0 4px 24px rgba(239, 68, 68, 0.25), var(--reflection-inner);
+}
   @media (max-width: 700px) {
     header { padding: 1.25rem 1rem 1rem; }
     main { grid-template-columns: 1fr; }
@@ -348,10 +364,10 @@
   <div class="logo">
     <div class="logo-icon">
       <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="1" y="4" width="7" height="2" rx="1" fill="#0f0f0f"/>
-        <rect x="1" y="8" width="5" height="2" rx="1" fill="#0f0f0f"/>
-        <rect x="1" y="12" width="6" height="2" rx="1" fill="#0f0f0f"/>
-        <path d="M11 9l3-3 3 3M14 6v6" stroke="#0f0f0f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M74 211.658C99.0457 142.251 155.836 87.1314 226.717 108.765C276.177 123.861 255.428 151.992 274.648 170.486C285.492 178.829 314.933 167.631 322.548 178.047C329.28 187.259 324.416 204.065 322.548 215.097C315.179 258.597 265.313 265 223.065 265" stroke="#000000" stroke-opacity="0.9" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M325 194C321.518 187.392 313.572 181.214 304 176" stroke="#000000" stroke-opacity="0.9" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M132.242 181.22C129.728 194.908 90.9731 288.143 131.095 296.086C205.608 306.73 196.665 221.971 196.665 169" stroke="#000000" stroke-opacity="0.9" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M234 168V173" stroke="#000000" stroke-opacity="0.9" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
     <div>
@@ -461,7 +477,7 @@
       <input type="text" placeholder="old-class" value="${esc(old)}">
       <span class="arrow">→</span>
       <input type="text" placeholder="new-class" value="${esc(nw)}">
-      <button class="btn-del" title="Remove row">×</button>
+      <button class="btn-del glass-danger" title="Remove row">×</button>
     `;
     row.querySelector('.btn-del').addEventListener('click', () => {
       row.remove();
