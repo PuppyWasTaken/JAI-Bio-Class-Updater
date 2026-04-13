@@ -369,9 +369,11 @@ main {
     border: 1px solid rgba(239, 68, 68, 0.4);
     box-shadow: 0 4px 24px rgba(239, 68, 68, 0.25), var(--reflection-inner);
 }
-  @media (max-width: 700px) {
 	.header1{border-radius:1.5rem 0 0 0;}
 	.header2{border-radius:0 1.5rem 0 0;}
+  @media (max-width: 700px) {
+	.header1 {border-radius: 1.5rem 1.5rem 0 0;}
+	.header2{border-radius:0;}
     header { padding: 1.25rem 1rem 1rem; }
     main { grid-template-columns: 1fr; }
     .panel { border-right: none; }
