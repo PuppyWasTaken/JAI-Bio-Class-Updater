@@ -29,6 +29,7 @@ So despite it's name, actually, it's not JAI specific, you can use this with any
 4. CHANGE LOG 
 > Shows what classes were successfully replaced in your document.
 
+Bug reports and feature requests can be submitted here: https://forms.gle/kJ8npmWrx2aBzVx77
 
 ### Disclaimers ### 
 This tool is not officially associated with or officially endorsed by JanitorAI. It was created with the purpose of being a useful community tool to improve QOL with botmaking. I do *not* collect any data off of it and I do *not* receive any files you upload or information you put in the tool. I have *no* access to any of your personal information (nor do I want it). Please use the tool at your own discretion. 
